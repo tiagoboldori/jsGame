@@ -1,24 +1,100 @@
 
-<canvas></canvas>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Teste Imagem Player</title>
+  <style>
+    body { margin: 0; background: #222; }
+    canvas { display:block; background:#333; margin:0 auto; }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
 
-<script>
-    const canvas = document.querySelector('canvas');
-    const ctx = canvas.getContext('2d');
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    ctx.imageSmoothingEnabled = false;
     
-    function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+    class Player {
+      constructor(x, y, width, height, src) {
+        this.x = x; this.y = y;
+        this.width = width; this.height = height;
+        this.speed = 4;
+        this.image = new Image();
+        this.loaded = false;
+        this.error = false;
+
+        // handlers
+        this.image.onload = () => {
+          this.loaded = true;
+          console.log("Imagem do player carregada com sucesso:", srcUsed);
+        };
+        this.image.onerror = () => {
+          this.error = true;
+          console.warn("Falha ao carregar imagem:", srcRequested);
+          // usa fallback data URL para garantir que algo apareça
+          if (this.image.src !== fallbackDataUrl) {
+            console.log("Trocando para fallback embutido (SVG).");
+            this.image.src = fallbackDataUrl;
+            // note: não definimos srcUsed aqui pois quando fallback carrega onload será chamado
+          } else {
+            console.error("Fallback também falhou (improvável).");
+          }
+        };
+
+        // tenta carregar a imagem externa; guardamos variáveis para debug
+        var srcRequested = src || "./tortuga.png";
+        var srcUsed = srcRequested;
+        // atribui src (padrão é "./tortuga.png")
+        this.image.src = srcRequested;
+
+        // se quiser iniciar o loop apenas após carregar, poderia esperar onload, 
+        // mas aqui o loop roda sempre — draw() mostra fallback/retângulo enquanto carrega.
+      }
+
+      draw() {
+        // desenha a imagem se carregada (naturalWidth > 0) ou retângulo provisório
+        if (this.image && (this.loaded || this.image.complete && this.image.naturalWidth > 0)) {
+          ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+        } else {
+          ctx.fillStyle = "lime";
+          ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
+      }
+
+      move(keys) {
+        if (keys["ArrowUp"]){
+          this.y -= this.speed;
+          this.image.style.transform = "scaleX(-1)";
+        } 
+        if (keys["ArrowDown"]) this.y += this.speed;
+        if (keys["ArrowLeft"]) this.x -= this.speed;
+        if (keys["ArrowRight"]) this.x += this.speed;
+        
+        this.x = Math.max(0, Math.min(canvas.width - this.width, this.x));
+        this.y = Math.max(0, Math.min(canvas.height - this.height, this.y));
+      }
     }
+
+    const player = new Player(325, 225, 150, 150, "./tortuga.png");
+
     
-    window.addEventListener('resize', resize);
-    resize();
-    
-    function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = 'blue';
-        ctx.fillRect(50, 50, 200, 100);
-        requestAnimationFrame(draw);
+    const keys = {};
+    window.addEventListener("keydown", e => keys[e.key] = true);
+    window.addEventListener("keyup", e => keys[e.key] = false);
+
+    function gameLoop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      player.move(keys);
+      player.draw();
+      requestAnimationFrame(gameLoop);
     }
-    
-    draw();
-</script>
+
+    // inicia loop imediatamente (mostrar fallback caso imagem demore)
+    gameLoop();
+  </script>
+</body>
+</html>

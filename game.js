@@ -1,3 +1,5 @@
+
+
 class Humanoid{
     constructor(maxHp, posY, posX, domElement, className,speed){
         this.posY = posY;
@@ -94,7 +96,7 @@ class Player extends Humanoid{
         this.domElement.style.transform = `rotate(${this.dir}deg)`;
     }
     fire(){
-        Builder.buildProjectile();
+        Spawner.spawnProjectile();
     }
 }
 
@@ -145,9 +147,9 @@ class Projectile{
 }
 
 
-
-class Builder{
-    static buildPlayer(){
+// Factory para criar instancias
+class Spawner{
+    static spawnPlayer(){
         let div = document.createElement("div");
         let p = new Player(100,0,0,div,"Player",5);
         let body = document.getElementById('game');
@@ -156,7 +158,7 @@ class Builder{
         return p;
     }
 
-    static buildZombie(){
+    static spawnZombie(){
         let div = document.createElement("div");
         let z = new Zombie(100,(Math.random() * (500 - 1) + 1),(Math.random() * (500 - 1) + 1),div,"Zombie",(Math.random() * ((3+(Game.waveNumber/3)) - 1) + 1));
         let body = document.getElementById('game');
@@ -165,15 +167,15 @@ class Builder{
         return z;
     }
 
-    static buildWave(){
+    static spawnWave(){
         let numEnemies = Game.waveNumber + 5;
         for (let i = 0; i< numEnemies; i++) {
-            Builder.buildZombie();
+            Spawner.spawnZombie();
         }
         return;
     }
 
-    static buildProjectile(){
+    static spawnProjectile(){
         let div = document.createElement("div");
         let body = document.getElementById('game');
         let p = new Projectile(Game.Player.dir,30,Game.Player.posY,Game.Player.posX,div,'Projectile');
@@ -218,9 +220,9 @@ class Game{
             Game.Player.fire();
         });
 
-        let p = Builder.buildPlayer();
+        let p = Spawner.spawnPlayer();
         Game.Player = p;
-        Builder.buildWave();
+        Spawner.spawnWave();
 
         Game.started = true;
 
@@ -247,7 +249,7 @@ class Game{
         if(Game.waveEnded()==true){
             Game.waveNumber +=1;
             document.getElementById('waveCounter').textContent= Game.waveNumber;
-            Builder.buildWave();
+            Spawner.spawnWave();
         }
         return;
     }
@@ -274,7 +276,7 @@ class Game{
         return;
     }
 
-    static isColliding(a, b, hitbox = 30) {
+    static isColliding(a, b, hitbox = 80) {
         return Math.hypot(a.posX - b.posX, a.posY - b.posY-30) < hitbox;
     }
 

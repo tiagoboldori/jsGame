@@ -7,5 +7,5 @@ Aplicado conceitos de design patterns de forma simples para fins de estudo.
 
 
 
-#Como rodar:
+# Como rodar:
 - Basta baixar o codigo mantendo a estrutura de pastas e abrir o index.html utilizando o navegador de sua preferência

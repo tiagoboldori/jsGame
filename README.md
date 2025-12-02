@@ -1,3 +1,6 @@
+Repositorio : www.github.com/tiagoboldori/jsGame
+
+
 # JsGame
 
 Jogo simples de zumbi feito usando Javascript.

@@ -1,18 +1,21 @@
 <html>
-    <link rel="stylesheet" href="./css/estilos.css">
+<link rel="stylesheet" href="./css/estilos.css">
 
-    <script src="./jquery-3.7.1.min.js"></script>
-    <script src="./game.js"></script>
-    <script>
-        function starterFun(){
-            let b = document.getElementById("buttonStart");
-            b.remove();
-            Game.start();
-        }
+<script src="./jquery-3.7.1.min.js"></script>
+<script src="./game.js"></script>
+<script>
+    function starterFun() {
+        let b = document.getElementById("buttonStart");
+        b.remove();
+        Game.start();
+    }
 
-    </script>
-    <h1>Wave: <span id="waveCounter">1</span></h1>
-    <body id="game" >
-        <button type="" id="buttonStart" onclick="starterFun()">Iniciar Jogo || WASD->movimentação ~  Mouse->Atirar</button>
-    </body>
+</script>
+<h1>Wave: <span id="waveCounter">1</span></h1>
+<h1>HP: <span id="hpCounter">100</span></h1>
+
+<body id="game">
+    <button type="" id="buttonStart" onclick="starterFun()">Iniciar Jogo || WASD->movimentação ~ Mouse->Atirar</button>
+</body>
+
 </html>
